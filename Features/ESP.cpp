@@ -142,14 +142,22 @@ void RenderBoundingBox(CBaseEntity* Local, CBaseEntity* Entity, float Dist)
 
 	int Elements = 0;
 	int Spacer = 14;
-//	MatSystemSurface->DrawColoredTextWrapper(5, x + w + 2, y + Spacer * Elements, 255, 255, 255, 255, Entity->GetName());
+	MatSystemSurface->DrawColoredTextWrapper(5, x + w + 2, y + Spacer * Elements, 255, 255, 255, 255, Entity->GetSignifierName());
 	Elements++;
 }
 
 void ESP::Run()
 {
 	auto Local = BaseEntity->GetLocalPlayer();
-
+	std::vector<std::string> validNames = {
+	"npc_titan",
+	"npc_spectre",
+	"npc_stalker",
+	"npc_soldier",
+	"npc_super_spectre",
+	"npc_frag_drone",
+	"npc_drone"
+	};
 	if (!Local || Local->GetLifeState() != LIFE_ALIVE || Local->GetHealth() <= 0)
 		return;
 
@@ -172,19 +180,16 @@ void ESP::Run()
 			continue;
 
 		auto Name = Entity->GetSignifierName();
-		std::string NPC(Name);
-		if (NPC.find("air") != std::string::npos)
+		
+		if (std::find(validNames.begin(), validNames.end(), Name) == validNames.end()) 
+			continue; 
+		
+		Vector AbsOrigin = Entity->GetAbsOrigin();
+		float Dist = AbsOrigin.DistTo(Local->GetAbsOrigin()) / METERS_TO_INCHES;
+		
+		if (Dist > 250.f)
 			continue;
-
-		if (Name[0] == 'p' || NPC.find("npc") == std::string::npos) //player
-		{
-			Vector AbsOrigin = Entity->GetAbsOrigin();
-			float Dist = AbsOrigin.DistTo(Local->GetAbsOrigin()) / METERS_TO_INCHES;
-
-			if (Dist > 250.f)
-				continue;
-
-			RenderBoundingBox(Local, Entity, Dist);
-		}
+		
+		RenderBoundingBox(Local, Entity, Dist);
 	}
 }
