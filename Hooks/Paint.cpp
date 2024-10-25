@@ -42,7 +42,7 @@ __int64 __fastcall HookedPaintTraverse(void* thisptr, __int64 panel, bool paintP
 
 		if (MenuOpen)
 		{
-			Renderer::DrawString(w / 2, h / 2 + 2 + Spacer * Elements, Enabled(Vars::Aimbot), "F2 - pSilent [MOUSE5]");
+			Renderer::DrawString(w / 2, h / 2 + 2 + Spacer * Elements, Enabled(Vars::Aimbot), "F2 - pSilent [Left Alt]");
 			Elements++;
 
 			Renderer::DrawString(w / 2, h / 2 + 2 + Spacer * Elements, Enabled(Vars::RageMode), "F3 - Autoshoot");
