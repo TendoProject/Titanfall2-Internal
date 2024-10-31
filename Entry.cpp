@@ -17,7 +17,8 @@ void Init()
 {
 	AllocConsole();
 	freopen_s(&IO, "CONOUT$", "w", stdout);
-	printf("r2\n");
+	printf("Titanfall 2\n");
+	printf("Credit to jzhfgvfwu - UnknownCheat\n\n");
 
 	BaseAddress = (uintptr_t)LI_MODULE(("Titanfall2.exe")).get();
 
