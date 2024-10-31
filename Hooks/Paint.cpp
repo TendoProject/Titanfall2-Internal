@@ -7,12 +7,20 @@ static bool MenuOpen = false;
 Color Enabled(bool Variable) { return Variable ? Color(65, 255, 65, 255) : Color(255, 65, 65, 255); }
 
 PaintTraverseFn OriginalPaintTraverse = nullptr;
-__int64 __fastcall HookedPaintTraverse(void* thisptr, __int64 panel, bool paintPopups, bool allowForce)
-{
-	auto Ret = OriginalPaintTraverse(thisptr, panel, paintPopups, allowForce);
 
-	if (panel == MatSystemSurface->GetEmbeddedPanel())
-	{
+void __fastcall HookedPaintTraverse(DWORD64* thisptr, unsigned long long panel, bool paintPopups, bool allowForce)
+{
+
+	if (!OriginalPaintTraverse) {
+		return;	}
+
+	OriginalPaintTraverse(thisptr, panel, paintPopups, allowForce);
+
+	if (!ClientState || ClientState->SignonState != SIGNONSTATE_FULL || !panel || panel != MatSystemSurface->GetEmbeddedPanel()) {
+		return;
+	}
+
+
 		MatSystemSurface->PushMakeCurrent(panel, true);
 		MatSystemSurface->DrawColoredTextWrapper(5, 2, 2, 255, 255, 255, 255, "titanfall 2");
 
@@ -55,11 +63,8 @@ __int64 __fastcall HookedPaintTraverse(void* thisptr, __int64 panel, bool paintP
 			Elements++;
 		}
 
-		if (ClientState->SignonState == SIGNONSTATE_FULL)
+
 			ESP::Run();
 
 		MatSystemSurface->PopMakeCurrent(panel);
 	}
-
-	return Ret;
-}
