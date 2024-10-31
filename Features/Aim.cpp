@@ -1,5 +1,8 @@
 #include "Aim.hpp"
 #include "Vars.hpp"
+#include <algorithm>
+#include <vector>
+#include <string>
 
 bool AimIsVisible(Vector Start, Vector End, CBaseEntity* Local, CBaseEntity* Entity)
 {
@@ -29,6 +32,16 @@ int GetTargetEntity(CUserCmd* Cmd, CBaseEntity* LocalPlayer)
 	Vector HitboxPosition;
 	auto CameraPos = LocalPlayer->GetCameraPos();
 
+	std::vector<std::string> validNames = {
+	"npc_titan",
+	"npc_spectre",
+	"npc_stalker",
+	"npc_soldier",
+	"npc_super_spectre",
+	"npc_frag_drone",
+	"npc_drone"
+	};
+
 	if (Vars::RageMode)
 		AimFoV = 360.f;
 
@@ -49,8 +62,12 @@ int GetTargetEntity(CUserCmd* Cmd, CBaseEntity* LocalPlayer)
 
 		auto Name = TargetEntity->GetSignifierName();
 
-		if (Name[0] != 'p' && Name[0] != 'n')
-			continue;
+		/*if (Name[0] != 'p' && Name[0] != 'n')
+			continue;*/
+
+		if (std::find(validNames.begin(), validNames.end(), Name) == validNames.end()) {
+			continue; // Skip if the name is not found in the valid list
+		}
 
 		if (!TargetEntity->GetHitboxPosition(HitboxPosition, 3))
 			continue;
